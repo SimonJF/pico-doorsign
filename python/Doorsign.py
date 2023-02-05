@@ -50,7 +50,7 @@ class EPD_7in5(framebuf.FrameBuffer):
         self.height = EPD_HEIGHT
         
         self.spi = SPI(1)
-        self.spi.init(baudrate=4000_000)
+        self.spi.init(baudrate=48_000_000)
         self.dc_pin = Pin(DC_PIN, Pin.OUT)
         
         self.buffer = bytearray(self.height * self.width // 8)
@@ -148,7 +148,8 @@ class EPD_7in5(framebuf.FrameBuffer):
         return 0;
 
     def Clear(self):
-        
+        before = utime.ticks_ms()
+
         high = self.height
         if( self.width % 8 == 0) :
             wide =  self.width // 8
@@ -164,6 +165,9 @@ class EPD_7in5(framebuf.FrameBuffer):
         for j in range(0, high):
             for i in range(0, wide):
                 self.send_data(0x00)
+        after = utime.ticks_ms()
+        print("Clear time: " + str(utime.ticks_diff(after, before)))
+
                 
         self.TurnOnDisplay()
         
@@ -188,7 +192,7 @@ class EPD_7in5(framebuf.FrameBuffer):
         self.TurnOnDisplay()
         
     def display(self,blackimage):
-        
+        before = utime.ticks_ms()
         high = self.height
         if( self.width % 8 == 0) :
             wide =  self.width // 8
@@ -204,7 +208,8 @@ class EPD_7in5(framebuf.FrameBuffer):
         for j in range(0, high):
             for i in range(0, wide):
                 self.send_data(blackimage[i + j * wide])
-                
+        after = utime.ticks_ms()
+        print("Transfer time: " + str(utime.ticks_diff(after, before)))
         self.TurnOnDisplay()
 
 
@@ -218,7 +223,8 @@ def show_image(epd, path):
     print("Showing: " + path)
     epd.init()
     with open(path, "rb") as file:
-        epd.display(file.read())
+        binary = file.read()
+        epd.display(binary)
     epd.sleep()
     print("Done showing image")
         
@@ -229,7 +235,10 @@ def loop(epd, p0, p1, p2):
         elif p1.value():
             show_image(epd, "BRB.raw")
         elif p2.value():
-            show_image(epd, "Lecturing.raw")
+            epd.init()
+            epd.Clear()
+            epd.sleep()
+            #show_image(epd, "Lecturing.raw")
 
 if __name__=='__main__':
     epd = EPD_7in5()

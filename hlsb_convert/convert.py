@@ -30,7 +30,7 @@ def convert(img, height, width, adj_width):
         for bit in range(7, -1, -1):
             if i % adj_width < width:
                 px =  img.getpixel((i % adj_width, i // adj_width))
-                if px < 128:
+                if px > 128:
                     buf[byte] |= 1 << bit
             i += 1
     return buf
@@ -40,14 +40,10 @@ def save(buf, path):
     print("Saving data to file: {}".format(path))
     with open(path, "wb") as f:
         f.write(buf)
-        #f.write("name = '{}'\nwidth = {}\nheight = {}\nformat = '{}'\nimg = {}"
-        #        .format(im_name, adj_width, height, "MONO_HLSB", buf))
 
 def get_all_bmps():
     p = Path(".")
     return list(p.glob('**/*.bmp'))
-
-
 
 def main():
     inputs = []

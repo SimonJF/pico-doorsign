@@ -36,25 +36,34 @@ def convert(img, height, width, adj_width):
     return buf
 
 def save(buf, path):
-    im_name = Path(path).stem
     # Save data to file
-    print("Saving data to file: {}".format(im_name + ".raw"))
-    with open(im_name + ".raw", "wb") as f:
+    print("Saving data to file: {}".format(path))
+    with open(path, "wb") as f:
         f.write(buf)
         #f.write("name = '{}'\nwidth = {}\nheight = {}\nformat = '{}'\nimg = {}"
         #        .format(im_name, adj_width, height, "MONO_HLSB", buf))
 
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: ./convert.py <name> <output>")
-        sys.exit(-1)
+def get_all_bmps():
+    p = Path(".")
+    return list(p.glob('**/*.bmp'))
 
-    path = sys.argv[1]
-    output = sys.argv[2]
-    (img, height, width, adj_width) = load(path)
-    out_buf = convert(img, height, width, adj_width)
-    save(out_buf, output)
-    print("Done!")
+
+
+def main():
+    inputs = []
+    if len(sys.argv) < 2:
+        inputs = get_all_bmps()
+    else:
+        inputs = [Path(sys.argv[1])]
+
+    for path in inputs:
+        print("Path: " + str(path))
+        output = str(Path(path.stem).with_suffix(".raw"))
+        print("Output: " + str(output))
+        (img, height, width, adj_width) = load(path)
+        out_buf = convert(img, height, width, adj_width)
+        save(out_buf, output)
+        print("Done!")
 
 
 if __name__ == "__main__":

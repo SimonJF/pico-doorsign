@@ -214,10 +214,28 @@ class EPD_7in5(framebuf.FrameBuffer):
         self.send_command(0x07) # deep sleep
         self.send_data(0xa5)
 
+def show_image(epd, path):
+    print("Showing: " + path)
+    epd.init()
+    with open(path, "rb") as file:
+        epd.display(file.read())
+    epd.sleep()
+    print("Done showing image")
+        
+def loop(epd, p0, p1, p2):
+    while True:
+        if p0.value():
+            show_image(epd, "PleaseKnock.raw")
+        elif p1.value():
+            show_image(epd, "BRB.raw")
+        elif p2.value():
+            show_image(epd, "Lecturing.raw")
 
 if __name__=='__main__':
     epd = EPD_7in5()
-    with open("PleaseKnock.raw", "rb") as file:
-        epd.display(file.read())
-    print("sleep")
-    epd.sleep()
+    p0 = Pin(0, Pin.IN, Pin.PULL_DOWN)
+    p1 = Pin(1, Pin.IN, Pin.PULL_DOWN)
+    p2 = Pin(2, Pin.IN, Pin.PULL_DOWN)
+    show_image(epd, "PleaseKnock.raw")
+
+    loop(epd, p0, p1, p2)

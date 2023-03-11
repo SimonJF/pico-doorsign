@@ -8,4 +8,4 @@ include_directories(../lib/e-Paper)
 
 # Generate the link library
 add_library(examples ${DIR_examples_SRCS})
-target_link_libraries(examples PUBLIC Config)
+target_link_libraries(examples PUBLIC Config hardware_sleep)

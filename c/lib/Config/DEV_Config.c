@@ -6,7 +6,7 @@
 *----------------
 * |	This version:   V3.0
 * | Date        :   2019-07-31
-* | Info        :   
+* | Info        :
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documnetation files (the "Software"), to deal
@@ -94,7 +94,7 @@ void DEV_GPIO_Init(void)
 	EPD_RST_PIN     = 12;
 	EPD_DC_PIN      = 8;
 	EPD_BUSY_PIN    = 13;
-	
+
 	EPD_CS_PIN      = 9;
 	EPD_CLK_PIN		= 10;
 	EPD_MOSI_PIN	= 11;
@@ -117,12 +117,11 @@ UBYTE DEV_Module_Init(void)
 
 	// GPIO Config
 	DEV_GPIO_Init();
-	
+
     spi_init(SPI_PORT, 4000 * 1000);
     gpio_set_function(EPD_CLK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(EPD_MOSI_PIN, GPIO_FUNC_SPI);
-	
-    printf("DEV_Module_Init OK \r\n");
+
 	return 0;
 }
 

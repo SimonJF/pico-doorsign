@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 include(pico_sdk_import.cmake)
-project(Pico_ePaper_Code)
+include(pico_extras_import.cmake)
+project(Pico_ePaper_Code C CXX ASM)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
 # add a compilation subdirectory
@@ -16,15 +19,16 @@ include_directories(./lib/Config)
 include_directories(./lib/GUI)
 
 # generate an executable file
-add_executable(epd 
+add_executable(epd
 main.c
 )
 
 # enable usb output, disable uart output
-pico_enable_stdio_usb(epd 1)
-pico_enable_stdio_uart(epd 0)
+# pico_enable_stdio_usb(epd 1)
+# pico_enable_stdio_uart(epd 0)
+
+target_link_libraries(epd hardware_sleep examples ePaper GUI Fonts Config pico_stdlib hardware_spi)
 
 # create map/bin/hex/uf2 file etc.
 pico_add_extra_outputs(epd)
 
-target_link_libraries(epd examples ePaper GUI Fonts Config pico_stdlib hardware_spi)
